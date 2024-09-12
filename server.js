@@ -51,7 +51,7 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 // CORS middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // Your frontend URL
+    origin: process.env.CLIENT_URL, // Your frontend URL
     credentials: true, // Allow credentials (cookies) to be sent
   })
 );
@@ -310,6 +310,9 @@ app.get("/api/clients", checkAuth, async (req, res) => {
 //   }
 // });
 
+
+
+
 // Create Invoice
 app.post("/api/invoices", checkAuth, async (req, res) => {
   const token = req.headers["x-auth-token"];
@@ -338,6 +341,24 @@ app.post("/api/invoices", checkAuth, async (req, res) => {
       });
   }
 });
+
+
+// get invoices
+app.get('/api/invoices', async (req, res) => {
+  const token = req.headers["x-auth-token"];
+  try {
+    const response = await axios.get(`${process.env.INVOICE_NINJA_API_URL}/invoices`, {
+      headers: getHeaders(token),
+    });
+    res.json(response.data);
+    // console.log(response.data);
+    
+  } catch (error) {
+    console.error('Error fetching invoices:', error);
+    res.status(500).json({ error: 'Failed to fetch invoices' });
+  }
+});
+
 
 // Edit Invoice (optional for later)
 app.put("/api/invoices/:id", checkAuth, async (req, res) => {
