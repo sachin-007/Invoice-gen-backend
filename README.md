@@ -21,8 +21,7 @@ This is a web application that generates invoices using the NinjaInvoice API. Th
 - **Hosting**: Vercel
 
 ## Live Demo
-
-- The application is live at: [invoce-generator-ninjainvoice.vercel.app](https://invoce-generator-ninjainvoice.vercel.app)
+- *The application is live at*: [invoice-generator-ninjainvoice.vercel.app](https://invoice-generator-ninjainvoice.vercel.app)
 
 Previously, it was hosted at: [invoice-generator-psi-beige.vercel.app](https://invoice-generator-psi-beige.vercel.app)
 
