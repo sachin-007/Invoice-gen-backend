@@ -42,8 +42,8 @@ Previously, it was hosted at: [invoice-generator-psi-beige.vercel.app](https://i
 3. **Set up environment variables: Create a .env file in the root directory and add the following environment variables:**
   ```bash
       INVOICE_NINJA_API=https://invoicing.co/api/v1
-      SESSION_SECRET=sachn007
-      SESSION_SECRET=sachn007
+      SESSION_SECRET=xxxxxxx
+      SESSION_SECRET=xxxxxxx
       INVOICE_NINJA_API_URL=https://invoicing.co/api/v1
       CLIENT_URL= http://localhost:3000
   ```
