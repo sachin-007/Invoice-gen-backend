@@ -1,38 +1,3 @@
-// const express = require("express");
-// const cors = require("cors");
-// const invoiceRoutes = require("./routes/invoiceRoutes");
-// const session = require('express-session');
-// require("dotenv").config();
-
-// const app = express();
-// const PORT = process.env.PORT || 5000;
-
-// app.use(express.json({ limit: "10mb" }));
-// app.use(express.urlencoded({ limit: "10mb", extended: true }));
-// app.use(cors());
-// app.use(express.json());
-
-// // Session Middleware
-// app.use(session({
-//   secret: process.env.SESSION_SECRET,
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: { secure: false } // Change to true for https
-// }));
-
-// // Routes
-// const authRoutes = require('./routes/authRoutes');
-// const clientRoutes = require('./routes/clientRoutes');
-// const ninServerRoutes = require('./routes/ninInvoiceRoutes')
-
-// app.use('/api/auth', authRoutes);
-// app.use('/api/clients', clientRoutes);
-// app.use('/api/invoices', ninServerRoutes);
-
-// app.use("/api", invoiceRoutes);
-
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
@@ -40,6 +5,7 @@ const axios = require("axios");
 require("dotenv").config();
 const invoiceRoutes = require("./routes/invoiceRoutes");
 const cookieParser = require("cookie-parser");
+const { refresh } = require("./controllers/refreshRouteController");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -47,6 +13,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use("/refreshitaxios", refresh);
 
 // CORS middleware
 app.use(
@@ -87,60 +54,6 @@ app.get("/api/test-token", (req, res) => {
   res.json({ token });
 });
 
-// // Your routes should come after session and CORS middleware
-// app.post("/api/login", async (req, res) => {
-//   const { email, password } = req.body;
-//   try {
-//     const response = await axios.post(
-//       "https://invoicing.co/api/v1/login",
-//       {
-//         email,
-//         password,
-//       },
-//       {
-//         withCredentials: true,
-//       }
-//     );
-
-//     const token = response.data.data[0].token.token;
-//     req.session.token = token;
-
-//     console.log("ses", req.session.token);
-
-//     res.json({ token });
-//   } catch (error) {
-//     res.status(401).json({ message: "Invalid email or password" });
-//   }
-// });
-
-// const checkAuth = (req, res, next) => {
-//   console.log("Session in checkAuth:", req.session);
-//   if (!req.session.token) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-//   next();
-// };
-
-// app.post("/api/clients", checkAuth, async (req, res) => {
-//   const clientData = req.body;
-//   try {
-//     const response = await axios.post(
-//       `${process.env.INVOICE_NINJA_API_URL}/clients`,
-//       clientData,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${req.session.token}`,
-//         },
-//       }
-//     );
-
-//     res.status(201).json(response.data);
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ message: "Client creation failed", error: error.response.data });
-//   }
-// });
 
 const checkAuth = (req, res, next) => {
   const token = req.headers["x-auth-token"];
@@ -179,35 +92,6 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// Create Client Route
-// app.post("/api/clients", checkAuth, async (req, res) => {
-//   console.log(req.session.token);
-//   const token = req.cookies.authToken;
-
-//   try {
-//     const clientData = req.body;
-
-//     const response = await axios.post(
-//       `${process.env.INVOICE_NINJA_API_URL}/clients`,
-//       clientData,
-//       {
-//         headers: getHeaders(token), // Pass the token from cookies in headers
-//         withCredentials: true, // Include credentials in request
-//       }
-//     );
-
-//     res.status(201).json(response.data);
-//   } catch (error) {
-//     console.error(
-//       "Error creating client:",
-//       error.response?.data || error.message
-//     );
-//     res.status(500).json({
-//       message: "Client creation failed",
-//       error: error.response?.data || error.message,
-//     });
-//   }
-// });
 
 app.post("/api/clients", checkAuth, async (req, res) => {
   // Get the token from headers (custom header 'x-auth-token')
@@ -284,32 +168,6 @@ app.get("/api/clients", checkAuth, async (req, res) => {
     });
   }
 });
-
-// // Create Invoice
-// app.post("/api/invoices", checkAuth, async (req, res) => {
-//   const token = req.headers["x-auth-token"];
-//   try {
-//     const invoiceData = req.body;
-
-//     // console.log(invoiceData);
-
-//     const response = await axios.post(
-//       `${process.env.INVOICE_NINJA_API_URL}/invoices`,
-//       invoiceData,
-//       {
-//         headers: getHeaders(token),
-//       }
-//     );
-//     // console.log(response.data);
-
-//     res.status(201).json(response.data);
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ message: "Invoice creation failed", error: error.response.data });
-//   }
-// });
-
 
 
 
